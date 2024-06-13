@@ -29,9 +29,9 @@
     cursor: pointer;
     background-color: transparent;
     border: 1px solid #8a2b06;
-    padding: 0.5rem 2rem;
+    padding: 0.5rem 1.2rem;
     border-radius: 25px;
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
 
 .actions button:hover,
@@ -47,5 +47,15 @@
 
 .actions .button {
     background-color: #8a2b06;
+    color: white;
+}
+
+.actions .resetCartBtn {
+    color: red;
+    border: 1px solid black
+}
+
+.actions .resetCartBtn:hover {
+    background-color: red;
     color: white;
 }
