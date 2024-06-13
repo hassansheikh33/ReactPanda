@@ -2,9 +2,11 @@ import classes from './CartButton.module.css'
 import CartIcon from './CartIcon'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { uiActions } from '../../../redux-store/ui-slice'
+import { useDispatch } from 'react-redux'
 
 export default function CartButton(props) {
-
+    const dispatch = useDispatch();
     const cart = useSelector(state => state.cart);
     const [buttonHighlight, setButtonHighlight] = useState(false)
 
@@ -20,8 +22,12 @@ export default function CartButton(props) {
 
     const btnClasses = `${classes.button} ${buttonHighlight ? classes.bump : ''}`;
 
+    function clickHandler() {
+        dispatch(uiActions.showCart());
+    }
+
     return (
-        <button className={btnClasses} onClick={props.onClick}>
+        <button className={btnClasses} onClick={clickHandler}>
             <span className={classes.icon}><CartIcon></CartIcon></span>
             <span>Go to Cart</span>
             <span className={classes.badge}>{cart.totalItems}</span>

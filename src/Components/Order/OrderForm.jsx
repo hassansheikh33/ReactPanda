@@ -1,8 +1,11 @@
 import classes from './OrderForm.module.css'
 import useForm from '../../hooks/use-Form'
+import { useDispatch } from 'react-redux';
+import { uiActions } from '../../redux-store/ui-slice';
 
 export default function OrderForm(props) {
 
+    const dispatch = useDispatch();
     const { value: nameValue, isValid: nameIsValid,
         hasError: nameHasError, onBlur: onNameBlur,
         onChange: onNameChange, reset: nameReset } = useForm(val => val !== '');
@@ -26,6 +29,10 @@ export default function OrderForm(props) {
         noteReset();
     }
 
+    function backToCartHandler() {
+        dispatch(uiActions.goBackToCart());
+    }
+
 
     return (<form onSubmit={formSubmissionHandler}>
         <div className={`${nameHasError ? classes['form-control'] + ' ' + classes['invalid'] : classes['form-control']}`}>
@@ -44,7 +51,7 @@ export default function OrderForm(props) {
             {props.hasError && <p className={classes['error-text']}>Please enter a valid Address</p>}
         </div>
         <div className={classes.actions}>
-            <button type='button' className={classes['button--alt']} onClick={props.onClose}>Go back to Cart</button>
+            <button type='button' className={classes['button--alt']} onClick={backToCartHandler}>Go back to Cart</button>
             <button className={classes.button} onClick={formSubmissionHandler}>Confirm Order</button>
         </div>
     </form>)
