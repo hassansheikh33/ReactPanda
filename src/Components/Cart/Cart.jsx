@@ -1,18 +1,19 @@
 import classes from './Cart.module.css'
 import Modal from '../UI/Modal/Modal';
-import cartContext from '../../store/cart-context';
-import { useContext } from 'react';
 import CartItem from './CartItem/CartItem';
+import { useDispatch, useSelector } from 'react-redux';
+import { cartActions } from '../../redux-store/cart-slice';
 
 export default function Cart(props) {
-    const cartCxt = useContext(cartContext);
+    const cart = useSelector(state => state.cart);
+    const dispatch = useDispatch();
 
     function addItemHandler(item) {
-        cartCxt.addItem({ ...item, amount: 1 });
+        dispatch(cartActions.addToCart({ ...item, amount: 1 }));
     }
 
     function removeItemHandler(id) {
-        cartCxt.removeItem(id);
+        dispatch(cartActions.removeFromCart(id));
     }
 
     function orderHandler() {
@@ -21,7 +22,7 @@ export default function Cart(props) {
 
     const cartItems = <ul
         className={classes['cart-items']}>
-        {cartCxt.items.map(item => <CartItem
+        {cart.items.map(item => <CartItem
             key={Math.random()}
             price={item.price}
             amount={item.amount}
@@ -31,19 +32,16 @@ export default function Cart(props) {
         />)}
     </ul>
 
-    const total = cartCxt.items.reduce((currentTotal, item) => {
-        return currentTotal + (item.price * item.amount)
-    }, 0)
-
     return <Modal onClose={props.onClose}>
-        {cartCxt.items.length > 0 && cartItems}
+        {cart.items.length > 0 && cartItems}
+        {cart.items.length === 0 && <h2 className={classes.empty}>Your Cart is Empty!</h2>}
         <div className={classes.total}>
             <span>Total Amount</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${cart.totalAmount.toFixed(2)}</span>
         </div>
         <div className={classes.actions}>
             <button type='button' className={classes['button--alt']} onClick={props.onClose}>Close</button>
-            {cartCxt.items.length > 0 && <button className={classes.button} onClick={orderHandler}>Checkout</button>}
+            {cart.items.length > 0 && <button className={classes.button} onClick={orderHandler}>Checkout</button>}
         </div>
     </Modal>
 }

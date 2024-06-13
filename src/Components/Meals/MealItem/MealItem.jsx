@@ -1,16 +1,15 @@
 import classes from './MealItem.module.css'
 import QtyForm from './QtyForm/QtyForm'
-import { useContext, useCallback } from 'react'
-import cartContext from '../../../store/cart-context'
+import { useDispatch } from 'react-redux'
+import { cartActions } from '../../../redux-store/cart-slice'
 
 
 export default function MealItem(props) {
+    const dispatch = useDispatch();
 
-    const cartCxt = useContext(cartContext);
-
-    const AddtoCartHandler = useCallback(amount => {
-        cartCxt.addItem({ name: props.name, price: props.price, id: props.id, amount: amount })
-    }, []);
+    const AddtoCartHandler = amount => {
+        dispatch(cartActions.addToCart({ name: props.name, price: props.price, id: props.id, amount: amount }))
+    }
 
     return <li className={classes.meal}>
         <div>

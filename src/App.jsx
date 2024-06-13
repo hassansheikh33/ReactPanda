@@ -2,7 +2,6 @@ import Header from "./Components/Layout/Header/Header";
 import MealList from "./Components/Meals/MealList/MealList";
 import Cart from "./Components/Cart/Cart";
 import { useState } from "react";
-import CartProvider from "./store/CartProvider";
 import Order from "./Components/Order/Order";
 
 function App() {
@@ -27,7 +26,7 @@ function App() {
     setOrderModalNeed(false);
   }
 
-  return <CartProvider>
+  return <>
     {orderModalNeed && <Order onBackdrop={() => {
       cancelModal();
       orderedModal();
@@ -40,7 +39,7 @@ function App() {
     <main>
       <MealList />
     </main>
-  </CartProvider>
+  </>
 }
 
 export default App;
