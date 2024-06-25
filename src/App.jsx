@@ -1,23 +1,52 @@
-import Header from "./Components/Layout/Header/Header";
-import MealList from "./Components/Meals/MealList/MealList";
-import Cart from "./Components/Cart/Cart";
-import Order from "./Components/Order/Order";
+import { RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
 import { fetchCartData } from "./redux-store/cart-actions";
 import { sendCartData } from "./redux-store/cart-actions";
+import { createBrowserRouter } from "react-router-dom";
+import Root from "./pages/Root";
+import Welcome from "./pages/Welcome";
+const ErrorPage = lazy(() => import("./pages/ErrorPage"));
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Welcome />,
+      },
+      {
+        path: "menu",
+        Component: lazy(() => import("./Components/Meals/MealList/MealList")),
+      },
+      {
+        path: "aboutUs",
+        Component: lazy(() => import("./pages/AboutUs")),
+      },
+      {
+        path: "cart",
+        Component: lazy(() => import("./Components/Cart/Cart")),
+      },
+      {
+        path: "checkout",
+        Component: lazy(() => import("./Components/Order/Order")),
+      },
+    ],
+  },
+]);
 
 let first = true;
 
 function App() {
   const dispatch = useDispatch();
-  const cart = useSelector(state => state.cart);
-  const showCheckOutModal = useSelector(state => state.ui.showCheckOutModal)
-  const showCart = useSelector(state => state.ui.showCartModal);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(fetchCartData());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     if (first) {
@@ -29,14 +58,11 @@ function App() {
     }
   }, [dispatch, cart]);
 
-  return <>
-    {showCheckOutModal && <Order />}
-    {showCart && <Cart />}
-    <Header />
-    <main>
-      <MealList />
-    </main>
-  </>
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;

@@ -1,56 +1,65 @@
-import Modal from '../UI/Modal/Modal';
-import classes from './Order.module.css'
-import { useState } from 'react';
-import OrderForm from './OrderForm';
-import { useDispatch, useSelector } from 'react-redux';
-import { order } from '../../redux-store/cart-actions';
-import { uiActions } from '../../redux-store/ui-slice';
+import classes from "./Order.module.css";
+import { useState } from "react";
+import OrderForm from "./OrderForm";
+import { useDispatch, useSelector } from "react-redux";
+import { order } from "../../redux-store/cart-actions";
+import { useNavigate } from "react-router-dom";
 
 export default function Order(props) {
-    const cart = useSelector(state => state.cart)
-    const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const [confirmed, setConfirmed] = useState(false);
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
-    function orderHandler(name, address, note) {
-        if (note.trim() !== '') {
-            dispatch(order(cart, name, address, note));
-        }
-        else {
-            dispatch(order(cart, name, address));
-        }
-        setConfirmed(true);
-    }
+  const [confirmed, setConfirmed] = useState(false);
 
-    let itemNames = '';
-    if (cart.items.length === 1) {
-        itemNames += `${cart.items[0].amount}x ${cart.items[0].name}`;
+  function orderHandler(name, address, note) {
+    if (note.trim() !== "") {
+      dispatch(order(cart, name, address, note));
     } else {
-        cart.items.map((item, index) => {
-            itemNames += `${item.amount}x ${item.name}, `
-            if (index === cart.items.length - 1) {
-                itemNames += `${item.amount}x ${item.name}`
-            }
-            return itemNames;
-        });
+      dispatch(order(cart, name, address));
     }
+    setConfirmed(true);
+  }
 
-    function closeCheckoutHandler() {
-        dispatch(uiActions.closeCheckout());
-    }
+  let itemNames = "";
+  if (cart.items.length === 1) {
+    itemNames += `${cart.items[0].amount}x ${cart.items[0].name}`;
+  } else {
+    cart.items.map((item, index) => {
+      itemNames += `${item.amount}x ${item.name}, `;
+      if (index === cart.items.length - 1) {
+        itemNames += `${item.amount}x ${item.name}`;
+      }
+      return itemNames;
+    });
+  }
 
-    return <Modal onClose={closeCheckoutHandler}>
-        {confirmed && <>
-            <h2 className={classes.center}>Thank You for Ordering !</h2>
-            <button type='button' className={classes['button--alt'] + ' centerBtn'} onClick={closeCheckoutHandler}>Close</button>
-        </>}
-        {!confirmed && (<>
-            <h2 className={classes.center}>Confirm Your Order!</h2>
-            <h3>Your Items: {itemNames}</h3>
-            <h3>Total Amount: ${cart.totalAmount.toFixed(2)}</h3>
-            <OrderForm onSubmit={orderHandler}></OrderForm></>)}
-    </Modal >
+  function closeCheckoutHandler() {
+    navigate("/menu");
+  }
 
-
-
+  return (
+    <div className={classes.container}>
+      {confirmed && (
+        <>
+          <h2 className={classes.center}>Thank You for Ordering !</h2>
+          <p style={{ textAlign: "center" }}>
+            Still Hungry?{" "}
+            <span className={classes.menu} onClick={closeCheckoutHandler}>
+              Go to Menu?
+            </span>
+          </p>
+        </>
+      )}
+      {!confirmed && (
+        <>
+          <h2 className={classes.center}>Confirm Your Order!</h2>
+          <h3>Your Items: {itemNames}</h3>
+          <h3>Total Amount: ${cart.totalAmount.toFixed(2)}</h3>
+          <OrderForm onSubmit={orderHandler}></OrderForm>
+        </>
+      )}
+    </div>
+  );
 }
