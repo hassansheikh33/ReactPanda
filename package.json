@@ -14,7 +14,7 @@
     "react-router-dom": "^6.24.0",
     "react-scripts": "^5.0.1",
     "web-vitals": "^0.2.4",
-    "homepage": "https://hassansheikh33.github.io/ReactPanda"
+    "homepage": "https://hassansheikh33.github.io/ReactPanda/"
   },
   "scripts": {
     "start": "react-scripts start",
